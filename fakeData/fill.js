@@ -17,7 +17,7 @@ const posts = [...Array(N_posts)].map((el, i) =>
 )
 const likes = posts.reduce((prev, post) => {
   persons.forEach(person => {
-    if (person.activity * post.popularity > 2 * M * M * Math.random()) {
+    if (person.activity * post.popularity > 25 * M * M * Math.random()) {
       prev.push(
         getLike(person.id, post.id, post.quality > 2 * M * Math.random())
       )
@@ -26,9 +26,17 @@ const likes = posts.reduce((prev, post) => {
   return prev
 }, [])
 
+console.log(likes.length)
+
 writeFiles({
   persons: { persons, fields: ['id', 'name', 'about'] },
-  accounts: {accounts, fields: ['id', 'person_id', 'login' , 'email', 'password_hash', 'role']},
-  posts: {posts, fields: ['id', 'person_id', 'title', 'body', 'created_at', 'edited_at']},
-  likes: {likes, fields: ['person_id', 'post_id', 'status']}
+  accounts: {
+    accounts,
+    fields: ['id', 'person_id', 'login', 'email', 'password_hash', 'role']
+  },
+  posts: {
+    posts,
+    fields: ['id', 'person_id', 'title', 'body', 'created_at', 'edited_at']
+  },
+  likes: { likes, fields: ['post_id', 'person_id', 'status'] }
 })

@@ -6,7 +6,7 @@ const getRandomInt = (min, max) =>
   min + Math.floor(Math.random() * (max - min)) + 1
 
 const postBody = (dis, textPreview) =>
-  [...Array(Math.floor(dis.ppf(Math.random())))].reduce(
+  [...Array(Math.floor(dis.ppf(Math.random()) + 0.1))].reduce(
     (prev, current) => prev + '\n' + faker.lorem.paragraphs(),
     textPreview
   )
@@ -21,7 +21,7 @@ export const getPerson = (id, dis) => ({
 export const getAccount = person => ({
   id: person.id,
   person_id: person.id,
-  login: faker.internet.userName(getRandomInt(5, 15)),
+  login: faker.internet.userName(),
   email: faker.internet.email(),
   password_hash: faker.internet.password(getRandomInt(5, 10)), // need to encrypt in the postgress
   role: 'user'
@@ -43,7 +43,7 @@ export const getPost = (id, person_id, minDate, dis) => {
 }
 
 export const getLike = (person_id, post_id, status) => ({
-  person_id,
   post_id,
+  person_id,
   status
 })
