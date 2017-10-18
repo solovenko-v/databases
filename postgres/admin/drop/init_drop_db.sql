@@ -1,0 +1,8 @@
+DROP DATABASE didenko;
+DROP DATABASE karamanutsa;
+DROP DATABASE lyisenko;
+DROP DATABASE mangir;
+DROP DATABASE radilov;
+DROP DATABASE rusnak;
+DROP DATABASE shleht;
+DROP DATABASE shtyirba;
