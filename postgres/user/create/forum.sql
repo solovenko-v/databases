@@ -180,6 +180,21 @@ $$ LANGUAGE plpgsql STRICT SECURITY DEFINER;
 COMMENT ON FUNCTION authenticate(TEXT, TEXT) IS 'Создает JWT - токен, который будет использоваться для идентификации пользователя';
 
 ---------------------------------
+CREATE FUNCTION encrypt_passwords() RETURNS void AS $$
+    DECLARE
+        current_account account;
+    BEGIN
+        FOR current_account IN SELECT * FROM account LOOP
+            IF char_length(current_account.password_hash) <> 60 THEN
+                UPDATE account SET password_hash = crypt(current_account.password_hash, gen_salt('bf')) WHERE id = current_account.id;
+            END IF;
+        END LOOP;
+    END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON FUNCTION encrypt_passwords() IS 'Шифрует пароли после загрузки аккаунтов из внешнего источника';
+
+---------------------------------
 -- Разграничение прав
 
 GRANT usage ON SCHEMA forum TO v_anonymous, v_user, v_moderator, v_administrator;
@@ -190,6 +205,7 @@ GRANT ALL ON TABLE person, post, post_like, tag, post_tag TO v_moderator, v_admi
 
 GRANT EXECUTE ON FUNCTION register(TEXT, TEXT, TEXT, TEXT) TO v_anonymous;
 GRANT EXECUTE ON FUNCTION authenticate(TEXT, TEXT) TO v_anonymous, v_user, v_moderator, v_administrator;
+GRANT EXECUTE ON FUNCTION encrypt_passwords() TO v_administrator;
 
 ALTER TABLE person ENABLE ROW LEVEL SECURITY;
 CREATE POLICY select_person ON person FOR SELECT
